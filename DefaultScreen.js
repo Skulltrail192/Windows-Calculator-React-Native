@@ -186,9 +186,6 @@ export default class HomeScreen extends Component {
   }
 
   operation(firstValue, secondValue, operator, historyText) {
-    console.log(firstValue)
-    console.log(secondValue)
-    console.log(operator)
     let formatOperator = (operator == 'x') ? '*' : (operator == '÷') ? '/' : operator
     if (firstValue && secondValue) {
       let result = eval(parseFloat(firstValue) + formatOperator + parseFloat(secondValue))
@@ -212,7 +209,7 @@ export default class HomeScreen extends Component {
             <NativeIcon name='menu' onPress={() =>
               this.props.navigation.openDrawer()} style={{ marginLeft: 10, color: 'white', paddingTop: 15 }} />
           </Left>
-          <Text style={{ alignSelf: 'flex-start', fontSize: 30, color: 'white', padding: 10, position: 'absolute', left: 50 }}>Default</Text>
+          <Text style={{ alignSelf: 'flex-start', fontSize: 25, color: 'white', padding: 12, position: 'absolute', left: 50 }}>Standard</Text>
           <Button buttonStyle={{ width: 70, height: 70, backgroundColor: 'transparent ' }} icon={
               <Icon
                 name="history"
@@ -260,23 +257,24 @@ const styles = StyleSheet.create({
 
   inputContainer: {
     flex: 8,
-    backgroundColor: '#202020'
+    backgroundColor: '#404040',
   },
 
   resultText: {
     color: 'white',
     fontSize: 60,
-    fontWeight: 'bold',
     paddingRight: 20,
     paddingLeft: 20,
     paddingBottom: 20,
     textAlign: 'right',
+    marginBottom: 20
   },
 
   historyText: {
     color: 'white',
-    fontSize: 30,
+    fontSize: 20,
     padding: 5,
+    marginTop: 30,
     textAlign: 'right',
   },
 
