@@ -29,6 +29,7 @@ export default class StandardScreen extends Component {
       isDoneOperation: false,
       nextValue: false,
       historyText: ' ',
+      resultOperation: 0
     }
     this.state = this.initialState;
   }
@@ -44,6 +45,7 @@ export default class StandardScreen extends Component {
           value={buttonItems}
           handleOnPress={this.handleInput.bind(this, buttonItems)}
           key={'btn-' + buttonIndex}
+          specialColor={'transparent'}
         />
       });
 
@@ -89,7 +91,7 @@ export default class StandardScreen extends Component {
   }
 
   handleInput = (input) => {
-    const { displayValue, operator, firstValue, secondValue, nextValue, isDoneOperation, historyText } = this.state;
+    const { displayValue, operator, firstValue, secondValue, nextValue, isDoneOperation, historyText, resultOperation } = this.state;
 
     switch (input) {
       case '0':
@@ -115,22 +117,23 @@ export default class StandardScreen extends Component {
               firstValue: input,
             })
           }
-          break;
+          //break;
         } else {
           this.setState({
             displayValue: displayValue === '0' ? input : operator && !secondValue ? input : displayValue + input,
           })
-        }
-        if (!nextValue) {
-          this.setState({
-            firstValue: firstValue + input,
-            isDoneOperation: false
-          })
-        } else {
-          this.setState({
-            secondValue: secondValue + input,
-            isDoneOperation: false,
-          })
+
+          if (!nextValue) {
+            this.setState({
+              firstValue: firstValue + input,
+              isDoneOperation: false,
+            })
+          } else {
+            this.setState({
+              secondValue: secondValue + input,
+              isDoneOperation: false,
+            })
+          }
         }
         break;
       case '+/-':
@@ -211,8 +214,21 @@ export default class StandardScreen extends Component {
             operator: input,
             historyText: isDoneOperation ? displayValue + input : (operator !== null ? historyText.toString().substr(0, historyText.toString().length - 1) : historyText) + displayValue + input,
             isDoneOperation: false,
+            resultOperation: firstValue
           })
           break;
+        }else{
+          let formatOperator = (operator == 'x') ? '*' : (operator == '÷') ? '/' : operator
+          let result = eval(parseFloat(resultOperation) + formatOperator + parseFloat(secondValue))
+          this.setState({
+            nextValue: true,
+            operator: input,
+            historyText: historyText + secondValue + operator,
+            displayValue: result,
+            isDoneOperation: false,
+            secondValue: '',
+            resultOperation: result
+          })          
         }
         break;
       case ',':

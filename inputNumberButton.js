@@ -6,7 +6,7 @@ import { Theme as UWPThemeProvider, getTheme } from "react-uwp/Theme";
 import Button from "react-uwp/Button";
 
 export default class InputNumberButton extends Component {
-    renderOptionalComponent(icon, value){
+    renderOptionalComponent(icon, value, fontSize){
         if(icon){
             return icon;
         }else{
@@ -16,7 +16,7 @@ export default class InputNumberButton extends Component {
     }
 
     render() {
-        const { value, handleOnPress, specialColor, icon, style } = this.props;
+        const { value, handleOnPress, specialColor, icon, style, fontSize } = this.props;
         return (
             <UWPThemeProvider
                 theme={getTheme({
@@ -31,7 +31,7 @@ export default class InputNumberButton extends Component {
                     style={styles.container, style?style:{ width: '100%', height: '100%', borderWidth: 1, borderColor: '#28292B', backgroundColor: specialColor?specialColor:'#222120'}}
                     onClick={() => handleOnPress(value)}
                     >
-                    {this.renderOptionalComponent(icon,value)}
+                    {this.renderOptionalComponent(icon,value, fontSize)}
                 </Button>
             </UWPThemeProvider>
             // <TouchableOpacity 
