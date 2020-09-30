@@ -116,13 +116,19 @@ export default class StandardScreen extends Component {
           if (!nextValue) {
             this.setState({
               firstValue: input,
+              historyText: input
             })
           }
-          //break;
         } else {
-          this.setState({
-            displayValue: displayValue === '0' ? input : operator && !secondValue ? input : displayValue + input,
-          })
+          if(displayValue == resultOperation == firstValue){
+            this.setState({
+              displayValue: displayValue === '0' ? input : displayValue + input,
+            })           
+          }else{
+            this.setState({
+              displayValue: displayValue === '0' ? input : operator && !secondValue ? input : displayValue + input,
+            })          
+          }
 
           if (!nextValue) {
             this.setState({
@@ -209,27 +215,49 @@ export default class StandardScreen extends Component {
       case '-':
       case 'x':
       case '÷':
-        if (firstValue && !secondValue) {
+        if(isDoneOperation){
+          let displayedValue = displayValue;
+          this.setState(this.initialState);
           this.setState({
-            nextValue: true,
+            firstValue: displayedValue,
             operator: input,
-            historyText: isDoneOperation ? displayValue + input : (operator !== null ? historyText.toString().substr(0, historyText.toString().length - 1) : historyText) + displayValue + input,
+            historyText: displayedValue + ' ' + input,
+            displayValue: displayedValue,
             isDoneOperation: false,
-            resultOperation: firstValue
+            resultOperation: displayedValue,
+            nextValue: true
           })
-          break;
-        } else {
-          let formatOperator = (operator == 'x') ? '*' : (operator == '÷') ? '/' : operator
-          let result = eval(parseFloat(resultOperation) + formatOperator + parseFloat(secondValue))
-          this.setState({
-            nextValue: true,
-            operator: input,
-            historyText: historyText + secondValue + operator,
-            displayValue: result,
-            isDoneOperation: false,
-            secondValue: '',
-            resultOperation: result
-          })          
+
+
+          // if (!nextValue) {
+          //   this.setState({
+          //     firstValue: input,
+          //     historyText: input
+          //   })
+          // }
+        }else{          
+          if (firstValue && !secondValue) {
+            this.setState({
+              nextValue: true,
+              operator: input,
+              historyText: isDoneOperation ? displayValue + ' ' + input : (input !== null ? historyText.toString().substr(0, historyText.toString().length - 1) : historyText) + ' ' + displayValue + ' ' + input,
+              isDoneOperation: false,
+              resultOperation: firstValue
+            })
+            break;
+          } else {
+            let formatOperator = (operator == 'x') ? '*' : (operator == '÷') ? '/' : operator
+            let result = eval(parseFloat(resultOperation) + formatOperator + parseFloat(secondValue))
+            this.setState({
+              nextValue: true,
+              operator: input,
+              historyText: historyText + ' ' + secondValue + ' ' + input,
+              displayValue: result,
+              isDoneOperation: false,
+              secondValue: '',
+              resultOperation: result
+            })          
+          }
         }
         break;
       case ',':
@@ -251,6 +279,14 @@ export default class StandardScreen extends Component {
         this.operation(firstValue, secondValue, displayValue, historyText, operator, resultOperation, isDoneOperation);
         break;
       case 'CE':
+        if(!isDoneOperation && firstValue && operator){
+          this.setState({
+            displayValue: '0'
+          })
+        }else{
+          this.setState(this.initialState);
+        }
+        break;
       case 'C':
         this.setState(this.initialState);
         break;
@@ -273,8 +309,9 @@ export default class StandardScreen extends Component {
       let result = eval(parseFloat(firstValue) + formatOperator + parseFloat(secondValue))
       this.setState({
         displayValue: result % 1 === 0 ? result : result.toFixed(2),
-        historyText: firstValue + operator + secondValue + '=',
+        historyText: firstValue + ' ' + operator + ' ' + secondValue + '=',
         firstValue: result % 1 === 0 ? result : result.toFixed(2),
+        isDoneOperation: true
         //secondValue: '',
       });
     } else {
@@ -282,7 +319,7 @@ export default class StandardScreen extends Component {
         let result = eval(parseFloat(resultOperation) + formatOperator + parseFloat(displayValue))
         this.setState({
           displayValue: result % 1 === 0 ? result : result.toFixed(2),
-          historyText: historyText + parseFloat(displayValue) + '=',
+          historyText: historyText + ' ' + parseFloat(displayValue) + ' =',
           firstValue: result % 1 === 0 ? result : result.toFixed(2),
           //secondValue: '',
           //operator: null,
@@ -294,7 +331,7 @@ export default class StandardScreen extends Component {
           let result = eval(parseFloat(firstValue) + formatOperator + parseFloat(secondValue))
           this.setState({
             displayValue: result % 1 === 0 ? result : result.toFixed(2),
-            historyText: firstValue + operator + secondValue + '=',
+            historyText: firstValue + ' ' + operator + ' ' + secondValue + '=',
             firstValue: result % 1 === 0 ? result : result.toFixed(2),
             //secondValue: '',
             //operator: null,
